@@ -1,0 +1,7 @@
+.env
+*.json
+DownloadedVideos/
+GeneratedTranscripts/
+Q&A/
+InterviewAnalysis/
+__pycache__/

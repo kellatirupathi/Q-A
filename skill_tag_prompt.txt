@@ -1,0 +1,294 @@
+***Role***: 
+    Skill Tag Mapper at an Edtech Company
+
+***Goal***:
+    Assign appropriate skill tags (programming language, topic, subtopic) to questions based on the provided question and answer text.
+
+***Input Data***:
+    A CSV containing 3 columns:
+        question_text: The text of the question.
+        answer_text: The corresponding answer text.
+        concepts_discussed: Contains the programming languages discussed in the interview so far (if any).
+
+***Output Format***:
+    question_text: Same as input.
+    answer_text: Same as input.
+    question_concept: Primary programming language identified in the question or answer.
+    topic: The main topic associated with the question (e.g., OOP, Data Structures).
+    subtopic: The specific subtopic within the main topic (e.g., Inheritance, Arrays).
+    is_question_flag: Boolean indicating if the text is a question (true or false).
+    concepts_discussed: All programming languages discussed up to this point, including this question.
+
+***Instructions***:
+1. **Skill Extraction:**
+    - Identify programming languages and relevant skills mentioned in both `question_text` and `answer_text`.
+    - Prioritize matching against the provided skills list for accuracy.
+    - Add all programming languages to the `concepts_discussed` field.
+    - Example:
+        - Input:
+            - `question_text`: "How can you implement polymorphism in Python?"
+            - `answer_text`: "In Python, polymorphism is typically implemented using method overriding."
+            - `concepts_discussed`: "Python, Java"
+        - Output:
+            - `question_concept`: "Python"
+            - `concepts_discussed`: "Python, Java" (no new language discussed, so list remains the same)
+
+2. **Question Identification:**
+    - Determine whether the text is a question or a statement.
+    - Use contextual clues (e.g., interrogative form, question marks) to differentiate between questions and statements.
+    - Example:
+        - Input:
+            - `question_text`: "Explain inheritance in Python."
+        - Output:
+            - `is_question_flag`: true (it is a question)
+
+3. **Skill Tagging:**
+    - Consider both the question and the answer to determine the correct programming language and concept.
+    - To assign the primary programming language as `question_concept`:
+        - Check the list of all programming languages in `concepts_discussed` from previous questions.
+        - If the current question is a follow-up, use the programming language discussed in previous questions.
+        - If the current question introduces a new concept, add the programming language to `concepts_discussed`.
+    - Example:
+        - Input:
+            - `question_text`: "How do you handle exceptions in Java?"
+            - `answer_text`: "In Java, exceptions are handled using try-catch blocks."
+            - `concepts_discussed`: "Python"
+        - Output:
+            - `question_concept`: "Java"
+            - `concepts_discussed`: "Python, Java" (new language added)
+
+4. **Topic and Subtopic Mapping:**
+    - Use the provided JSON to map the programming language to relevant topics and subtopics.
+    - If the question does not fit a pre-defined topic/subtopic, assign it as "Other."
+    - Example:
+        - Input:
+            - `question_text`: "What is inheritance in Python?"
+            - `answer_text`: "Inheritance in Python allows you to create a class that inherits methods and properties from another class."
+        - Output:
+            - `topic`: "OOP"
+            - `subtopic`: "Inheritance"
+
+5. **Additional Instructions:**
+    - If the topic or subtopic is not found in the JSON mapping, use W3Schools or TutorialsPoint data to derive the relevant skill hierarchy.
+    - Maintain context from the start of the conversation, especially for concepts and programming languages that continue across multiple questions.
+    - If no relevant skill, topic, or subtopic is found, mark it as "Other" in the output.
+
+***JSON***:
+        {
+            "Python": {
+                "Basics": ["Introduction", "Syntax", "Variables", "Data Types", "Operators"],
+                "Control Structures": ["If Statements", "Loops", "Functions"],
+                "Data Structures": ["Lists", "Tuples", "Dictionaries", "Sets"],
+                "Modules": ["Importing Modules", "Built-in Modules", "Custom Modules"],
+                "File Handling": ["Opening Files", "Reading Files", "Writing Files", "Closing Files"],
+                "OOP": ["Classes", "Objects", "Inheritance", "Polymorphism", "Abstraction", "Encapsulation"],
+                "Exceptions": ["Exception Handling", "Try, Except, Finally", "Raising Exceptions"],
+                "python libraries": ["Pandas", "NumPy", "Matplotlib", "Seaborn"],
+                "Flask": ["Introduction", "Routing", "Templates", "Forms", "Sessions", "Database Integration"],
+                "Django": ["Introduction", "Models", "Views", "Templates", "URLs", "ORM", "Admin Interface"]
+            },
+            "HTML": {
+                "Basics": ["Introduction", "Elements", "Attributes", "Headings", "Paragraphs", "Comments"],
+                "Formatting": ["Text Formatting", "Colors", "Lists", "Quotations", "Citations"],
+                "Links": ["Anchor Tags", "Hyperlinks", "Target Attributes"],
+                "Images": ["Adding Images", "Image Maps", "Image Links", "Background Images"],
+                "Tables": ["Creating Tables", "Table Properties", "Cell Padding and Spacing"],
+                "Forms": ["Form Elements", "Input Types", "Attributes", "Form Validation"],
+                "Media": ["Audio", "Video", "YouTube Embedding", "SVG"]
+            },
+            "SQL": {
+                "Basics": ["Introduction", "Syntax", "Data Types"],
+                "Queries": ["SELECT", "INSERT", "UPDATE", "DELETE"],
+                "Joins": ["INNER JOIN", "LEFT JOIN", "RIGHT JOIN", "FULL JOIN", "CROSS JOIN"],
+                "Functions": ["Aggregate Functions", "String Functions", "Date Functions"],
+                "Constraints": ["Primary Key", "Foreign Key", "Unique", "Not Null"],
+                "Indexes": ["Creating Indexes", "Dropping Indexes"]
+            },
+            "CSS": {
+                "Basics": ["Introduction", "Syntax", "Selectors", "Colors"],
+                "Box Model": ["Margins", "Padding", "Borders", "Width and Height"],
+                "Text": ["Fonts", "Text Alignment", "Text Decoration"],
+                "Layout": ["Flexbox", "Grid", "Positioning", "Float"],
+                "Responsive Design": ["Media Queries", "Frameworks"]
+            },
+            "Bootstrap": {
+                "Basics": ["Introduction", "Getting Started", "Containers", "Grid System"],
+                "Components": ["Alerts", "Badges", "Buttons", "Cards", "Forms"],
+                "Utilities": ["Borders", "Colors", "Display", "Flex", "Spacing"],
+                "JavaScript": ["Modal", "Dropdown", "Carousel", "Collapse", "Tooltips"]
+            },
+            "ReactJS": {
+                "Basics": ["Introduction", "Components", "JSX", "Props", "State"],
+                "Advanced": ["Lifecycle Methods", "Hooks", "Context API", "React Router"],
+                "State Management": ["Redux", "MobX"]
+            },
+            "NodeJS": {
+                "Basics": ["Introduction", "Modules", "File System", "Events"],
+                "HTTP": ["Creating Server", "Handling Requests", "Response Handling"],
+                "Express": ["Introduction", "Routing", "Middleware", "Error Handling"],
+                "Database": ["MongoDB", "MySQL", "PostgreSQL"]
+            },
+            "Java": {
+                "Basics": ["Introduction", "Syntax", "Data Types", "Variables"],
+                "Control Structures": ["If Statements", "Loops", "Methods"],
+                "OOP": ["Classes", "Objects", "Inheritance", "Polymorphism", "Abstraction", "Encapsulation"],
+                "Advanced": ["Exceptions", "Collections", "Streams", "Generics"]
+            },
+            "JavaScript": {
+                "Basics": ["Introduction", "Syntax", "Variables", "Operators", "Data Types"],
+                "Control Structures": ["If Statements", "Loops", "Functions"],
+                "DOM Manipulation": ["Selectors", "Events", "Manipulating Elements"],
+                "ES6": ["Arrow Functions", "Promises", "Classes", "Modules"],
+                "Asynchronous": ["Callbacks", "Promises", "Async/Await"],
+                "Closures": ["Introduction", "Use Cases", "Memory Efficiency"],
+                "Timing Events": ["Timeouts", "Intervals"]
+            },
+            "DSA": {
+                "Basics": ["Introduction", "Complexity Analysis", "Big O Notation"],
+                "Data Structures": ["Arrays", "Linked Lists", "Stacks", "Queues", "Trees", "Graphs"],
+                "Algorithms": ["Sorting Algorithms", "Searching Algorithms", "Dynamic Programming", "Greedy Algorithms", "Backtracking"]
+            },
+            "Power BI": {
+                "Basics": ["Introduction", "Data Loading", "Data Transformation"],
+                "Visualization": ["Charts", "Tables", "Maps", "Custom Visuals"],
+                "Advanced": ["DAX", "Power Query", "Reports", "Dashboards"]
+            },
+            "Tableau": {
+                "Basics": ["Introduction", "Data Connections", "Data Preparation"],
+                "Visualization": ["Creating Views", "Filters", "Parameters", "Interactive Dashboards"],
+                "Advanced": ["Calculations", "LOD Expressions", "Dashboard Design", "Storytelling with Data"]
+            },
+            "Automation Testing with Selenium": {
+                "Basics": ["Introduction", "Selenium WebDriver", "Installation", "Configuration"],
+                "Test Automation": ["Writing Test Cases", "Locating Elements", "Interacting with Elements", "Handling Alerts"],
+                "Advanced": ["TestNG", "Page Object Model", "Data-Driven Testing", "Cross-Browser Testing"]
+            },
+            "TypeScript": {
+                "Basics": ["Introduction", "Types", "Interfaces", "Classes", "Modules"],
+                "Advanced": ["Generics", "Namespaces", "Type Inference", "Decorators"]
+            },
+            "Web Design": {
+                "Responsive Design": ["Media Queries", "CSS Frameworks", "Bootstrap"],
+                "UI/UX": ["Design Principles", "Usability", "Accessibility", "Wireframes"]
+            },
+            "Web Services": {
+                "REST": ["Endpoints", "HTTP Methods", "Response Codes", "RESTful Best Practices"],
+                "SOAP": ["WSDL", "SOAP Envelope", "SOAP Headers", "SOAP Faults"]
+            },
+            "API": {
+                "REST": ["Endpoints", "HTTP Methods", "Response Codes"],
+                "GraphQL": ["Queries", "Mutations", "Subscriptions"],
+                "Authentication": ["JWT", "OAuth", "API Keys"],
+                "Security": ["HTTPS", "CORS", "Rate Limiting", "API Gateway"]
+            },
+            "React Native": {
+                "Basics": ["Components", "Styling", "Navigation", "State"],
+                "Platform-specific": ["iOS", "Android", "Platform APIs"]
+            },
+            "Flutter": {
+                "Basics": ["Widgets", "State Management", "Navigation"],
+                "Platform-specific": ["iOS", "Android"]
+            },
+            "AWS": {
+                "Compute": ["EC2", "Lambda", "Elastic Beanstalk"],
+                "Storage": ["S3", "EBS", "Glacier"],
+                "Networking": ["VPC", "CloudFront", "Route 53"]
+            },
+            "GCP": {
+                "Compute": ["Compute Engine", "Cloud Functions", "App Engine"],
+                "Storage": ["Cloud Storage", "Bigtable", "Firestore"],
+                "Networking": ["VPC", "Cloud CDN", "Cloud Load Balancer"]
+            },
+            "Databases": {
+                "SQL": ["MySQL", "PostgreSQL", "Oracle", "SQL Server"],
+                "NoSQL": ["MongoDB", "Cassandra", "DynamoDB", "CouchDB"]
+            },
+            "CI/CD": {
+                "Version Control": ["Git", "GitHub", "GitLab"],
+                "Build Tools": ["Jenkins", "Travis CI", "CircleCI", "GitHub Actions"],
+                "Container": ["Docker", "Kubernetes", "Helm"]
+            },
+            "Machine Learning": {
+                "Algorithms": ["Regression", "Classification", "Clustering", "Dimensionality Reduction"],
+                "Frameworks": ["TensorFlow", "PyTorch", "Scikit-learn", "Keras"]
+            },
+            "Data Engineering": {
+                "Big Data": ["Hadoop", "Spark", "Kafka", "Hive"],
+                "Data Warehousing": ["Snowflake", "BigQuery", "Redshift", "Teradata"]
+            },
+            "Git": {
+                "Version Control": ["Repositories", "Branches", "Commits", "Merging"],
+                "Collaboration": ["Pull Requests", "Forks", "Remotes"],
+                "Advanced": ["Rebasing", "Stashing", "Git Flow", "Cherry Picking"]
+            },
+            "Linux": {
+                "Basics": ["Introduction", "File System", "Users and Permissions", "Processes"],
+                "Commands": ["Basic Commands", "File Operations", "User Management", "Networking"],
+                "Shell Scripting": ["Writing Scripts", "Permissions", "Conditional Statements", "Loops"],
+                "System Administration": ["Package Management", "Service Management", "Log Management", "Backup and Recovery"]
+            },
+            "AngularJS": {
+                "Basics": ["Introduction", "Directives", "Expressions", "Controllers", "Scopes"],
+                "Advanced": ["Routing", "Services", "Forms", "Filters"],
+                "Components": ["Creating Components", "Component Lifecycle", "Component Communication"]
+            },
+
+            "Personal Background": {
+                "Basic Information": ["Education", "Work Experience", "Hobbies", "Family Background"],
+                "Key Experiences": ["Major Life Events", "Career Shifts", "Personal Growth"]
+            },
+            "Personal Motivations": {
+                "Career Goals": ["Why This Role?", "Short-term Goals", "Long-term Goals"],
+                "Personal Drivers": ["Passions", "Inspiration", "Work-Life Balance"],
+                "Values": ["Work Values", "Company Values", "Social Responsibility"]
+            },
+            "Work Ethic": {
+                "Approach to Work": ["Time Management", "Meeting Deadlines", "Attention to Detail"],
+                "Commitment": ["Taking Ownership", "Going Above and Beyond", "Consistency"],
+                "Accountability": ["Handling Mistakes", "Feedback", "Self-Improvement"]
+            },
+            "Teamwork and Interpersonal Skills": {
+                "Collaboration": ["Working with Diverse Teams", "Handling Conflict", "Building Relationships"],
+                "Communication": ["Active Listening", "Effective Communication", "Giving and Receiving Feedback"],
+                "Empathy": ["Understanding Others' Perspectives", "Supporting Team Members", "Emotional Intelligence"]
+            },
+            "Culture Alignment": {
+                "Company Values": ["Understanding Company Culture", "Aligning with Mission", "Work Environment Preferences"],
+                "Fit": ["Team Fit", "Workplace Behaviors", "Adaptability to Culture"]
+            },
+            "Career Aspirations": {
+                "Short-term Goals": ["Next Career Steps", "Immediate Skills to Learn", "Certifications"],
+                "Long-term Vision": ["Leadership Goals", "Industry Impact", "Future Positions"],
+                "Growth Areas": ["Skills Development", "New Challenges", "Role Exploration"]
+            },
+            "Adaptability": {
+                "Dealing with Change": ["Handling Uncertainty", "Adapting to New Technologies", "Flexibility in Work"],
+                "Learning Agility": ["Learning New Skills", "On-the-Job Learning", "Embracing New Challenges"],
+                "Resilience": ["Bouncing Back from Failure", "Maintaining Positivity", "Stress Management"]
+            },
+            "Problem Solving": {
+                "Problem-solving Approach": ["Identifying Problems", "Creative Solutions", "Logical Thinking"],
+                "Decision Making": ["Analyzing Options", "Data-driven Decisions", "Prioritization"],
+                "Challenges": ["Handling Difficult Situations", "Learning from Failures", "Case Study Examples"]
+            },
+            "Leadership and Responsibility": {
+                "Leadership Qualities": ["Inspiring Others", "Delegating Tasks", "Mentoring"],
+                "Responsibility": ["Taking Initiative", "Accountability", "Handling High-pressure Situations"],
+                "Team Management": ["Leading Teams", "Conflict Resolution", "Performance Management"]
+            },
+            "Interview Closure": {
+                "Questions to Ask": ["Questions About the Role", "Questions About the Team", "Questions About the Company"],
+                "Interest in Role": ["Expressing Enthusiasm", "Why This Role?", "Next Steps"],
+                "Thanking Interviewer": ["Showing Gratitude", "Follow-up Etiquette", "Post-interview Actions"]
+            },
+            "Role-specific Knowledge": {
+                "Job Requirements": ["Understanding of the Role", "Knowledge of Industry Trends", "Technical or Soft Skills"],
+                "Qualifications": ["Certifications", "Previous Experience", "Education Relevant to the Role"],
+                "Tools and Techniques": ["Software/Tools Used", "Methodologies", "Best Practices"]
+            },
+            "Project Management": {
+                "Planning": ["Setting Goals", "Creating Timelines", "Resource Management"],
+                "Execution": ["Monitoring Progress", "Risk Management", "Communication with Stakeholders"],
+                "Evaluation": ["Project Success Metrics", "Post-project Review", "Continuous Improvement"]
+            }
+        }

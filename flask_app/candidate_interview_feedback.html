@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Interview Feedback</title>
+    <style>
+        :root {
+    --primary-color: green;
+    --secondary-color: red;
+}
+body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(0deg, rgb(215, 231, 197) 0%, rgb(209, 183, 180) 100%);
+    color: #221d1d;
+}
+* {
+  font-family: sans-serif; /* Change your font family */
+}
+.grid-container {
+  display: grid;
+  width: 40vw;
+  height: 30vh;
+  grid-template-columns:  1fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr;
+  grid-gap: 1rem;
+  margin-bottom: 6.2vh;
+  grid-template-areas:
+      "content-1-1 content-1-2"
+      "content-2-1 content-2-2"
+      "content-3 content-4";
+}
+.content-1-1{
+    grid-area: content-1-1
+}
+.content-1-2{
+    grid-area: content-1-2;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+.content-2-1{
+    grid-area: content-2-1
+}
+.content-2-2{
+    grid-area: content-2-2
+}
+.content-3{
+    grid-area: content-3
+}
+.content-4{
+    grid-area: content-4
+}
+.content-table {
+  border-collapse: collapse;
+  margin: 25px 0;
+  font-size: 0.9em;
+  min-width: 400px;
+  border-radius: 5px 5px 0 0;
+  overflow: hidden;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+}
+.feedback{
+    width: 50vw;
+}
+ 
+.content-table thead tr {
+  background-color: #028a6f;
+  color: #ffffff;
+  text-align: left;
+  font-weight: bold;
+}
+ 
+.content-table th,
+.content-table td {
+  padding: 12px 15px;
+}
+ 
+.content-table tbody tr {
+  border-bottom: 1px solid #dddddd;
+}
+ 
+.content-table tbody tr:nth-of-type(even) {
+  background-color: #e6a7a7;
+}
+ 
+.content-table tbody tr:last-of-type {
+  border-bottom: 2px solid #047e65;
+}
+ 
+.content-table tbody tr.active-row {
+  font-weight: bold;
+  color: #006d98;
+}
+.report-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+
+}
+.flex-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+.flex-container img {
+    margin-right: 20px;
+    border-radius: 50%;
+    width: 100px;
+    justify-content: center;
+    height: 100px;
+    background-color: #044236;
+}
+.candidate-details {
+    flex-grow: 1;
+}
+.video-link {
+    color: var(--primary-color);
+}
+.error {
+    color: var(--secondary-color);
+}
+/* Add gaps between <p> elements */
+.flex-container p {
+    margin-bottom: 10px; /* Adjust the value as needed */
+}
+/* Add gaps between feedback timestamp and feedback text */
+.feedback-timeline li {
+    margin-bottom: 10px; /* Adjust the value as needed */
+}
+    </style>
+</head>
+<body>
+    <div class="report-container">
+        <h1>Interview Feedback</h1>
+        <div class="grid-container">
+        <div class="content-1-1 flex-container">
+            
+            <img src="https://test-diarizaton.s3.ap-south-1.amazonaws.com/candidate_profile_image.webp" class="image" alt="Candidate Image">
+                        
+        </div>
+        <div class="content-1-2">
+            <div class="candidate-details">
+                <p><strong>Candidate Name:</strong> fgf</p>
+                <p><strong>Candidate Email:</strong> gf</p>
+            </div>
+        </div>
+
+        <div class="content-2-1">
+            <p ><strong>Company: </strong>  fgfgf</p>
+        </div>
+        <div class="content-2-2">
+            <p><strong>Interview Date: </strong>  2024-04-25 14:08:29.253874</p>
+        </div>
+
+        <div class="content-3">
+            <p><strong>Video Playback Link: </strong> <a class="video-link" href="https://test-diarizaton.s3.ap-south-1.amazonaws.com/1714034305260.webm">https://test-diarizaton.s3.ap-south-1.amazonaws.com/1714034305260.webm</a></p>
+
+        </div>
+        <div class="content-4">
+            <p><strong>Duration: </strong> 46.68 Mins</p>
+        </div>
+    </div>
+    <br/>
+    <br/>
+        <h2>Concept-wise Scores</h2>
+        <table class="content-table">
+        <thead>
+            <tr>
+                <th>Concept</th>
+                <th>Score</th>
+            </tr>
+        </thead>
+        <tbody>
+            
+            <tr>
+                <td>Python</td>
+                <td>4.25</td>
+            </tr>
+            
+            <tr>
+                <td>Reactjs</td>
+                <td>4.61</td>
+            </tr>
+            
+            <tr>
+                <td>Redux</td>
+                <td>7.0</td>
+            </tr>
+            
+            <tr>
+                <td>Other</td>
+                <td>1.0</td>
+            </tr>
+            
+        </tbody>
+        </table>
+
+        <h2>Question-wise Scores</h2>
+        <table class="content-table">
+            <thead>
+                <tr>
+                    <th>Question</th>
+                    <th>Score</th>
+                </tr>
+            </thead>
+           <tbody>
+            
+            <tr>
+                <td>Can you tell me in detail about the life cycle methods in React, what are they and what are their functions?</td>
+                <td>6.5</td>
+            </tr>
+            
+            <tr>
+                <td>Can you tell me the purpose of using super constructor with props argument in React? Like why we are using super constructor with props argument?</td>
+                <td>1.0</td>
+            </tr>
+            
+            <tr>
+                <td>So, can you tell me if it is, is it okay to use set state in component will mount method? Is it preferable to use it or not? Is it safe to use it? Set state inside component will mount method?</td>
+                <td>7.25</td>
+            </tr>
+            
+            <tr>
+                <td>Can you tell me how can you memoize a component? Like what are, yeah, how can you memoize a component?</td>
+                <td>3.0</td>
+            </tr>
+            
+            <tr>
+                <td>Can you tell me how can you memoize a function?</td>
+                <td>1.0</td>
+            </tr>
+            
+            <tr>
+                <td>Can you, can you tell me in detail about use callback? Uh, how the, about the function and how it can be used for memoization?</td>
+                <td>6.5</td>
+            </tr>
+            
+            <tr>
+                <td>Uh, can you tell me, uh, why function is preferred over object for the set state? Like why we prefer function over object or why we need to pass a function to set a state over object?</td>
+                <td>1.0</td>
+            </tr>
+            
+            <tr>
+                <td>Uh, can you tell me, uh, what is the difference between, uh, super and super props in react, in ES6 classes?</td>
+                <td>6.25</td>
+            </tr>
+            
+            <tr>
+                <td>Uh, uh, can you tell me, uh, why react dom is separated from react?</td>
+                <td>5.75</td>
+            </tr>
+            
+            <tr>
+                <td>Uh, so like, have you also worked with Redux? So can you, uh, first just tell me the difference between the call and put, uh, functions in Redux?</td>
+                <td>6.25</td>
+            </tr>
+            
+            <tr>
+                <td>Can you tell me some of the drawbacks of the MVW pattern, the model view whatever pattern?</td>
+                <td>1.0</td>
+            </tr>
+            
+            <tr>
+                <td>Okay, so in Redux, how do we use connect like what are the steps that we use connect in our container like how do we use connect basically in Redux?</td>
+                <td>7.5</td>
+            </tr>
+            
+            <tr>
+                <td>Okay, since you mentioned reducers, so can you tell me more about reducers? So, reducers are like your functions that will take the current actions, that will take the current state and it will also take an action as argument. So, it will take the current state and an action as argument and it will return a new state by using that action. Okay, so can you tell me how can you reset the state in Redux using reducer?</td>
+                <td>7.25</td>
+            </tr>
+            
+            <tr>
+                <td>Okay, can you tell me, so this is a React question, so can you tell me what is lifting state up in React, lifting state up?</td>
+                <td>6.0</td>
+            </tr>
+            
+            <tr>
+                <td>What is the reason why do we lift the shared state up let us say, why do we do that?</td>
+                <td>7.0</td>
+            </tr>
+            
+            <tr>
+                <td>How are create element and clone element different from each other, like what are the functions of create element and clone element?</td>
+                <td>0.0</td>
+            </tr>
+            
+            <tr>
+                <td>Can you tell me about higher order components and also the use cases for higher order components?</td>
+                <td>7.5</td>
+            </tr>
+            
+            <tr>
+                <td>In any editor of your choice, can you quickly create a react component, let us say we can call it counter and it has to display a counter value and provide button to increment and decrement the counter by one, like the counter value starts from zero and you have to just, you know, provide buttons to increment and decrement the value by one, can you do that?</td>
+                <td>1.0</td>
+            </tr>
+            
+            <tr>
+                <td>This website is really slow right now, do you have any suggestion, any other suggestion? Do you have any, okay, can you put it in, can you write it in VS Code, I just want to see the code, it's okay if you are not able to write it, can you at least just put it in VS Code?</td>
+                <td>1.0</td>
+            </tr>
+            
+            <tr>
+                <td>So, it will have two buttons, one would be for increment and one would be for decrement, we will define our increment.</td>
+                <td>2.0</td>
+            </tr>
+            
+            <tr>
+                <td>Can you tell me some of the performance optimization strategies which can be used in React, some of them, one or two maybe?</td>
+                <td>7.5</td>
+            </tr>
+            
+            <tr>
+                <td>Can you tell me about prop drilling and how can we avoid prop drilling?</td>
+                <td>7.5</td>
+            </tr>
+            
+            <tr>
+                <td>Have you heard about synthetic events in React? Okay, can you tell me something about synthetic events?</td>
+                <td>6.25</td>
+            </tr>
+            
+            <tr>
+                <td>Okay, and can you tell me about decorators in Python, of course, we have decorators in other languages also, the function is almost similar, so can you tell me how are decorators used in Python?</td>
+                <td>4.25</td>
+            </tr>
+            
+           </tbody>
+
+        </table>
+
+        <h2>Feedback</h2>
+        <table class="content-table feedback">
+            <thead>
+                <tr>
+                    <th>Timestamp</th>
+                    <th>Scenario</th>
+                    <th>Improvement Point</th>
+                </tr>
+            </thead>
+           <tbody>
+            
+            <tr>
+                <td>00:01:23,080</td>
+                <td>When asked about the purpose of using super constructor with props in React, you were unable to recall any information.</td>
+                <td>It's important to understand the basics of class components in React, including the use of the super constructor with props. Consider revisiting this fundamental concept.</td>
+            </tr>
+            
+            <tr>
+                <td>00:03:26,759</td>
+                <td>When asked about memoizing a function, you mentioned not being aware of any memoization library.</td>
+                <td>Being familiar with optimization techniques like memoization is crucial for performance improvement in React. Try to learn about libraries and methods such as useMemo for effective memoization.</td>
+            </tr>
+            
+            <tr>
+                <td>00:04:17,459</td>
+                <td>You expressed a lack of knowledge when asked why a function is preferred over an object for setState in React.</td>
+                <td>Understanding the reasons behind using functions for setState, such as avoiding issues with asynchronous updates, is vital. Please delve deeper into this topic.</td>
+            </tr>
+            
+            <tr>
+                <td>00:10:28,680</td>
+                <td>You were unable to answer when asked about the drawbacks of the MVW pattern.</td>
+                <td>Knowing various architectural patterns and their pros and cons can significantly impact design decisions. Make sure to study different patterns like MVW and their implications.</td>
+            </tr>
+            
+            <tr>
+                <td>00:14:13,240</td>
+                <td>When discussing how to reset the state in Redux using a reducer, your explanation was vague and lacked depth.</td>
+                <td>Being able to articulate how specific functionalities like state resetting in Redux work is crucial. Aim to clarify your understanding and ability to explain such processes.</td>
+            </tr>
+            
+            <tr>
+                <td>00:20:00,000</td>
+                <td>During a coding task to create a React component, you were unsure about the code's functionality.</td>
+                <td>Confidence in coding directly affects performance. Practice coding with clear objectives and test your components to ensure they function as expected.</td>
+            </tr>
+            
+            <tr>
+                <td>00:32:27,339</td>
+                <td>When asked about decorators in Python, your explanation was incomplete and lacked technical depth.</td>
+                <td>Understanding advanced concepts like decorators in Python can greatly enhance your coding skills. Try to study more about how decorators work and their applications.</td>
+            </tr>
+            
+           </tbody>
+
+        </table>
+    </div>
+</body>
+</html>

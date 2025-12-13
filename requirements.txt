@@ -1,0 +1,8 @@
+streamlit
+pandas
+requests
+gdown
+gspread
+google-auth
+python-dotenv
+pydub

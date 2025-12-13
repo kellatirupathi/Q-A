@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Interview Feedback</title>
+    <style>
+        :root {
+    --primary-color: green;
+    --secondary-color: red;
+}
+body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(0deg, rgb(215, 231, 197) 0%, rgb(209, 183, 180) 100%);
+    color: #221d1d;
+}
+* {
+  font-family: sans-serif; /* Change your font family */
+}
+.grid-container {
+  display: grid;
+  width: 40vw;
+  height: 30vh;
+  grid-template-columns:  1fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr;
+  grid-gap: 1rem;
+  grid-template-areas:
+      "content-1-1 content-1-2"
+      "content-2-1 content-2-2"
+      "content-3 content-4";
+}
+.content-1-1{
+    grid-area: content-1-1
+}
+.content-1-2{
+    grid-area: content-1-2;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+.content-2-1{
+    grid-area: content-2-1
+}
+.content-2-2{
+    grid-area: content-2-2
+}
+.content-3{
+    grid-area: content-3
+}
+.content-4{
+    grid-area: content-4
+}
+.content-table {
+  border-collapse: collapse;
+  margin: 25px 0;
+  font-size: 0.9em;
+  min-width: 400px;
+  border-radius: 5px 5px 0 0;
+  overflow: hidden;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+}
+.feedback{
+    width: 50vw;
+}
+ 
+.content-table thead tr {
+  background-color: #028a6f;
+  color: #ffffff;
+  text-align: left;
+  font-weight: bold;
+}
+ 
+.content-table th,
+.content-table td {
+  padding: 12px 15px;
+}
+ 
+.content-table tbody tr {
+  border-bottom: 1px solid #dddddd;
+}
+ 
+.content-table tbody tr:nth-of-type(even) {
+  background-color: #e6a7a7;
+}
+ 
+.content-table tbody tr:last-of-type {
+  border-bottom: 2px solid #047e65;
+}
+ 
+.content-table tbody tr.active-row {
+  font-weight: bold;
+  color: #006d98;
+}
+.report-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+
+}
+.flex-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+.flex-container img {
+    margin-right: 20px;
+    border-radius: 50%;
+    width: 100px;
+    justify-content: center;
+    height: 100px;
+    background-color: #044236;
+}
+.candidate-details {
+    flex-grow: 1;
+}
+.video-link {
+    color: var(--primary-color);
+}
+.error {
+    color: var(--secondary-color);
+}
+/* Add gaps between <p> elements */
+.flex-container p {
+    margin-bottom: 10px; /* Adjust the value as needed */
+}
+/* Add gaps between feedback timestamp and feedback text */
+.feedback-timeline li {
+    margin-bottom: 10px; /* Adjust the value as needed */
+}
+    </style>
+</head>
+<body>
+    <div class="report-container">
+        <h1>Interview Feedback</h1>
+        <div class="grid-container">
+        <div class="content-1-1 flex-container">
+            {% if candidate_image %}
+            <img src="{{ candidate_image }}" class="image" alt="Candidate Image">
+                        {% endif %}
+        </div>
+        <div class="content-1-2">
+            <div class="candidate-details">
+                <p><strong>Candidate Name:</strong> {{ candidate_name }}</p>
+                <p><strong>Candidate Email:</strong> {{ candidate_email }}</p>
+            </div>
+        </div>
+
+        <div class="content-2-1">
+            <p ><strong>Company: </strong>  {{ company_name }}</p>
+        </div>
+        <div class="content-2-2">
+            <p><strong>Interview Date: </strong>  {{ interview_date }}</p>
+        </div>
+
+        <div class="content-3">
+            <p><strong>Video Playback Link: </strong> <a class="video-link" href="{{ video_link }}">{{ video_link }}</a></p>
+
+        </div>
+        <div class="content-4">
+            <p><strong>Duration: </strong> {{ duration }}</p>
+        </div>
+    </div>
+    <br/>
+    <br/>
+        <h2>Concept-wise Scores</h2>
+        <table class="content-table">
+        <thead>
+            <tr>
+                <th>Concept</th>
+                <th>Score</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for concept in concept_scores %}
+            <tr>
+                <td>{{concept.concept_name}}</td>
+                <td>{{concept.average_score}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+        </table>
+
+        <h2>Question-wise Scores</h2>
+        <table class="content-table">
+            <thead>
+                <tr>
+                    <th>Question</th>
+                    <th>Score</th>
+                </tr>
+            </thead>
+           <tbody>
+            {% for question in question_scores %}
+            <tr>
+                <td>{{ question.question_text }}</td>
+                <td>{{ question.answer_relevancy_score }}</td>
+            </tr>
+            {% endfor %}
+           </tbody>
+
+        </table>
+
+        <h2>Feedback</h2>
+        <table class="content-table feedback">
+            <thead>
+                <tr>
+                    <th>Timestamp</th>
+                    <th>Scenario</th>
+                    <th>Improvement Point</th>
+                </tr>
+            </thead>
+           <tbody>
+            {% for feedback in feedback_timeline %}
+            <tr>
+                <td>{{ feedback.StartTimestamp }}</td>
+                <td>{{ feedback.Scenario }}</td>
+                <td>{{ feedback.Feedback }}</td>
+            </tr>
+            {% endfor %}
+           </tbody>
+
+        </table>
+    </div>
+</body>
+</html>
