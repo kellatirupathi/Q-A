@@ -7,3 +7,4 @@ google-auth
 python-dotenv
 pydub
 audioop-lts
+toml
