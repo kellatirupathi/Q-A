@@ -519,6 +519,10 @@
 #                 main_bar.progress((i+1)/total, text=f"Completed {i+1}/{total}")
 #             st.success("Batch Complete!")
 
+
+
+
+
 import streamlit as st
 import os
 import sys
@@ -618,12 +622,12 @@ Interviewer: Okay, tell me about React.
 {chunk}
 """
 
-# UPDATED QNA PROMPT WITH SPECIFIC CATEGORIES AND RELEVANCY
+# UPDATED QNA PROMPT: Removed Score, Kept Relevancy, Specific Order Logic
 CUSTOM_QNA_PROMPT = """
 #### Task: Extract Panel Interview Q&A with Technical Assessment ####
 
 **Role:** Expert Technical Interview Auditor
-**Goal:** Extract questions and answers, then score and categorize them strictly.
+**Goal:** Extract questions and answers, then categorize and validate them strictly.
 
 **Input:** A transcript with speaker labels (Interviewer/Candidate).
 
@@ -639,8 +643,7 @@ CUSTOM_QNA_PROMPT = """
    - **DO NOT** use concepts like 'Authentication', 'Sessions', 'Frontend', 'Backend'. 
    - If the topic is JWT Authentication, the stack is 'JWT'.
 4. **Difficulty**: Assess complexity strictly as: 'Easy', 'Medium', 'Hard'.
-5. **Score (1-10)**: Rate the overall quality/correctness of the answer.
-6. **Relevancy Score (1-10)**: Validate the answer against the question. 
+5. **Relevancy Score (1-10)**: Validate the answer against the question. 
    - 10: Direct, accurate answer.
    - 5: Vague or partially related.
    - 1: Completely dodged or incorrect logic.
@@ -652,7 +655,6 @@ Example:
   {
     "question": "What is the difference between EJS and ReactJS?",
     "answer": "React uses a virtual DOM...",
-    "score": 8,
     "relevancy_score": 9,
     "type": "Theory",
     "tech_stack": "React.js, EJS",
@@ -956,7 +958,6 @@ def extract_qna_with_progress(labeled_text, output_csv_path):
         rename_map = {
             'question': 'Question Text',
             'answer': 'Answer Text',
-            'score': 'Score',
             'relevancy_score': 'Relevancy Score',
             'type': 'Question Type',
             'tech_stack': 'Question Techstack',
@@ -966,12 +967,12 @@ def extract_qna_with_progress(labeled_text, output_csv_path):
         df.rename(columns=rename_map, inplace=True)
         
         # Ensure all columns exist
-        required_cols = ['Question Text', 'Answer Text', 'Score', 'Relevancy Score', 'Question Type', 'Question Techstack', 'Difficulty']
+        required_cols = ['Question Text', 'Answer Text', 'Relevancy Score', 'Question Type', 'Difficulty', 'Question Techstack']
         for col in required_cols:
             if col not in df.columns:
                 df[col] = "N/A"
         
-        # Select and Reorder
+        # Select and Reorder to the REQUESTED Format
         df = df[required_cols]
         
         # Cleaning
@@ -1028,7 +1029,7 @@ def process_media_pipeline(source_path, file_id, original_filename):
         with t2:
             st.text_area("Raw with Timestamps", raw_text, height=300, key=f"raw_{file_id}")
 
-        # 4. Q&A Extraction (Updated with Scoring)
+        # 4. Q&A Extraction (Updated without General Score, Specific Column Order)
         if not os.path.exists(qna_csv_path):
             qna_df = extract_qna_with_progress(labeled_text, qna_csv_path)
         else:
@@ -1037,14 +1038,16 @@ def process_media_pipeline(source_path, file_id, original_filename):
         if not qna_df.empty:
             st.markdown("### 📊 Interview Assessment")
             
-            # Formatting the dataframe for better UI display
-            display_cols = ['Score', 'Relevancy Score', 'Question Type', 'Difficulty', 'Question Techstack', 'Question Text', 'Answer Text']
+            # Requested Column Order:
+            # Question text | answer | Relevency score | Question Type | Difficulty | Question Techstack
+            display_cols = ['Question Text', 'Answer Text', 'Relevancy Score', 'Question Type', 'Difficulty', 'Question Techstack']
+            
             # Reorder if columns exist
             cols_to_show = [c for c in display_cols if c in qna_df.columns]
             
             st.dataframe(qna_df[cols_to_show], use_container_width=True, hide_index=True)
             
-            csv = qna_df.to_csv(index=False).encode('utf-8')
+            csv = qna_df[cols_to_show].to_csv(index=False).encode('utf-8')
             st.download_button(f"Download {original_filename} Analysis CSV", csv, f"{base_name}_assessment.csv", "text/csv")
         else:
             st.warning("No Q&A found.")
@@ -1054,7 +1057,7 @@ def process_media_pipeline(source_path, file_id, original_filename):
 # --- UI ---
 
 st.markdown("### Videos & Audios Analyzer")
-st.caption("Auto-Transcribe > Detect Speakers > Score & Validate Answers > Extract Tech Stack")
+st.caption("Auto-Transcribe > Detect Speakers > Validate Answers > Extract Tech Stack")
 
 tab1, tab2 = st.tabs(["📂 Batch Upload (Local)", "☁️ Batch Drive (Cloud)"])
 
