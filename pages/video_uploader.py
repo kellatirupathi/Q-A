@@ -60,7 +60,6 @@ CHUNKS_DIR = "AudioChunks"
 VIDEO_EXTENSIONS = ["mp4", "mov", "avi", "mkv", "webm", "wmv", "flv", "mpeg", "mpg"]
 AUDIO_EXTENSIONS = ["mp3", "wav", "m4a", "ogg", "flac", "aac", "wma"]
 
-# Create directories if not exist
 for d in [DOWNLOAD_DIR, TRANSCRIPT_DIR, QNA_DIR, CHUNKS_DIR]:
     if not os.path.exists(d):
         os.makedirs(d)
@@ -173,21 +172,6 @@ class ProgressTracker:
         self.progress_bar.progress(1.0, text=f"{self.task_name} Complete! ✅")
         time.sleep(0.5)
         self.progress_bar.empty()
-
-# --- CLEANUP FUNCTION ---
-def clear_storage():
-    """Deletes all files in temporary directories to free up cloud storage."""
-    dirs_to_clean = [DOWNLOAD_DIR, TRANSCRIPT_DIR, QNA_DIR, CHUNKS_DIR]
-    count = 0
-    for d in dirs_to_clean:
-        files = glob.glob(os.path.join(d, "*"))
-        for f in files:
-            try:
-                os.remove(f)
-                count += 1
-            except Exception as e:
-                pass
-    return count
 
 # --- CORE FUNCTIONS ---
 
@@ -551,17 +535,6 @@ def process_media_pipeline(source_path, file_id, original_filename):
     gc.collect()
 
 # --- UI ---
-
-# SIDEBAR FOR CLEANUP
-with st.sidebar:
-    st.header("⚙️ Settings")
-    st.info("Files are temporarily stored. Use this button to clear space for new batches.")
-    if st.button("🗑️ Reset & Clear Storage"):
-        n = clear_storage()
-        st.cache_data.clear()
-        st.success(f"Cleared {n} temporary files!")
-        time.sleep(1)
-        st.rerun()
 
 st.markdown("### Videos & Audios Analyzer")
 st.caption("Auto-Transcribe > Detect Speakers > Validate Answers > Extract Tech Stack")
