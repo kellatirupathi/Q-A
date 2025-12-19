@@ -519,7 +519,6 @@
 #                 main_bar.progress((i+1)/total, text=f"Completed {i+1}/{total}")
 #             st.success("Batch Complete!")
 
-
 import streamlit as st
 import os
 import sys
@@ -619,33 +618,44 @@ Interviewer: Okay, tell me about React.
 {chunk}
 """
 
-# UPDATED QNA PROMPT WITH SCORING AND METADATA
+# UPDATED QNA PROMPT WITH SPECIFIC CATEGORIES AND RELEVANCY
 CUSTOM_QNA_PROMPT = """
 #### Task: Extract Panel Interview Q&A with Technical Assessment ####
 
 **Role:** Expert Technical Interview Auditor
-**Goal:** Extract questions and answers, then score and categorize them.
+**Goal:** Extract questions and answers, then score and categorize them strictly.
 
 **Input:** A transcript with speaker labels (Interviewer/Candidate).
 
 **Instructions:**
-1. **Identify**: Extract technical or behavioral questions asked by the Interviewer and the answers given by the Candidate.
-2. **Score (1-10)**: Rate the quality of the answer. 1 = Poor/Wrong, 5 = Average, 10 = Perfect/Insightful.
-3. **Categorize (Type)**: Classify the question (e.g., Conceptual, Coding, Behavioral, Scenario-based, System Design).
-4. **Tech Stack**: Identify the specific technology or topic (e.g., Python, React, SQL, AWS, Soft Skills, General).
-5. **Difficulty**: Assess the complexity. **YOU MUST USE ONLY THESE VALUES**: 'Easy', 'Medium', 'Hard'.
-6. **Consolidate**: Merge multi-turn answers if it belongs to the same question context.
+1. **Identify**: Extract questions asked by the Interviewer and answers given by the Candidate.
+2. **Question Type**: Classify strictly into ONLY these categories: 
+   - 'Theory'
+   - 'Coding'
+   - 'Self Introduction'
+   - 'Project Explanation'
+   - 'Behavioral'
+3. **Tech Stack**: Identify SPECIFIC tool/language names (e.g., 'React.js', 'Node.js', 'SQL', 'Python', 'AWS', 'Docker'). 
+   - **DO NOT** use concepts like 'Authentication', 'Sessions', 'Frontend', 'Backend'. 
+   - If the topic is JWT Authentication, the stack is 'JWT'.
+4. **Difficulty**: Assess complexity strictly as: 'Easy', 'Medium', 'Hard'.
+5. **Score (1-10)**: Rate the overall quality/correctness of the answer.
+6. **Relevancy Score (1-10)**: Validate the answer against the question. 
+   - 10: Direct, accurate answer.
+   - 5: Vague or partially related.
+   - 1: Completely dodged or incorrect logic.
 
 **Output Format:**
 Return a strictly valid JSON list of objects.
 Example:
 [
   {
-    "question": "What is the difference between list and tuple?",
-    "answer": "Lists are mutable, tuples are immutable...",
-    "score": 9,
-    "type": "Conceptual",
-    "tech_stack": "Python",
+    "question": "What is the difference between EJS and ReactJS?",
+    "answer": "React uses a virtual DOM...",
+    "score": 8,
+    "relevancy_score": 9,
+    "type": "Theory",
+    "tech_stack": "React.js, EJS",
     "difficulty": "Easy"
   }
 ]
@@ -896,7 +906,7 @@ def extract_qna_with_progress(labeled_text, output_csv_path):
 
     headers = {"Authorization": f"Bearer {API_KEY}", "Content-Type": "application/json"}
     
-    tracker = ProgressTracker(len(chunks), "Extracting & Scoring Q&A")
+    tracker = ProgressTracker(len(chunks), "Extracting, Scoring & Validating Q&A")
     all_data = []
     prev_context = ""
     
@@ -916,14 +926,13 @@ def extract_qna_with_progress(labeled_text, output_csv_path):
                 data = r.json()['choices'][0]['message']['content']
                 json_data = json.loads(data)
                 
-                # Normalize JSON output whether it is a list or a dictionary wrapper
+                # Normalize JSON output
                 extracted_list = []
                 if isinstance(json_data, list): 
                     extracted_list = json_data
                 elif isinstance(json_data, dict) and 'questions' in json_data: 
                     extracted_list = json_data['questions']
                 elif isinstance(json_data, dict):
-                    # Try to find any key that contains a list
                     for k, v in json_data.items():
                         if isinstance(v, list):
                             extracted_list = v
@@ -943,13 +952,12 @@ def extract_qna_with_progress(labeled_text, output_csv_path):
     if all_data:
         df = pd.DataFrame(all_data)
         
-        # Standardize column names based on JSON keys
-        # We expect: question, answer, score, type, tech_stack, difficulty
-        
+        # Standardize column names
         rename_map = {
             'question': 'Question Text',
             'answer': 'Answer Text',
             'score': 'Score',
+            'relevancy_score': 'Relevancy Score',
             'type': 'Question Type',
             'tech_stack': 'Question Techstack',
             'difficulty': 'Difficulty'
@@ -957,8 +965,8 @@ def extract_qna_with_progress(labeled_text, output_csv_path):
         
         df.rename(columns=rename_map, inplace=True)
         
-        # Ensure all columns exist even if API missed them
-        required_cols = ['Question Text', 'Answer Text', 'Score', 'Question Type', 'Question Techstack', 'Difficulty']
+        # Ensure all columns exist
+        required_cols = ['Question Text', 'Answer Text', 'Score', 'Relevancy Score', 'Question Type', 'Question Techstack', 'Difficulty']
         for col in required_cols:
             if col not in df.columns:
                 df[col] = "N/A"
@@ -1030,7 +1038,7 @@ def process_media_pipeline(source_path, file_id, original_filename):
             st.markdown("### 📊 Interview Assessment")
             
             # Formatting the dataframe for better UI display
-            display_cols = ['Score', 'Question Type', 'Difficulty', 'Question Techstack', 'Question Text', 'Answer Text']
+            display_cols = ['Score', 'Relevancy Score', 'Question Type', 'Difficulty', 'Question Techstack', 'Question Text', 'Answer Text']
             # Reorder if columns exist
             cols_to_show = [c for c in display_cols if c in qna_df.columns]
             
@@ -1046,7 +1054,7 @@ def process_media_pipeline(source_path, file_id, original_filename):
 # --- UI ---
 
 st.markdown("### 🗣️ Interview Processor Pro")
-st.caption("Auto-Transcribe > Detect Speakers > Score Answers > Extract Tech Stack")
+st.caption("Auto-Transcribe > Detect Speakers > Score & Validate Answers > Extract Tech Stack")
 
 tab1, tab2 = st.tabs(["📂 Batch Upload (Local)", "☁️ Batch Drive (Cloud)"])
 
