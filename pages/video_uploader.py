@@ -1053,7 +1053,7 @@ def process_media_pipeline(source_path, file_id, original_filename):
 
 # --- UI ---
 
-st.markdown("### 🗣️ Interview Processor Pro")
+st.markdown("### Videos & Audios Analyzer")
 st.caption("Auto-Transcribe > Detect Speakers > Score & Validate Answers > Extract Tech Stack")
 
 tab1, tab2 = st.tabs(["📂 Batch Upload (Local)", "☁️ Batch Drive (Cloud)"])
