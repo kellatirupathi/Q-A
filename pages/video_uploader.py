@@ -64,7 +64,7 @@
 #     if not os.path.exists(d):
 #         os.makedirs(d)
 
-# st.set_page_config(page_title="Interview Processor Pro", layout="wide")
+# st.set_page_config(page_title="Videos & Audios Analyser ", layout="wide")
 
 # # --- PROMPTS ---
 
